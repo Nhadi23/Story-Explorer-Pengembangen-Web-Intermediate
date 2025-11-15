@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="144" height="144" viewBox="0 0 144 144" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="144" height="144" fill="#2563eb"/>
+  
+  <!-- Icon content -->
+  <g transform="translate(36, 36)">
+    <!-- Book -->
+    <rect x="0" y="14.4" width="72" height="57.6" fill="white" rx="2.88"/>
+    <line x1="36" y1="14.4" x2="36" y2="72" stroke="#2563eb" stroke-width="2.88"/>
+    
+    <!-- Location pin -->
+    <circle cx="57.6" cy="21.599999999999998" r="11.52" fill="#f59e0b"/>
+    <circle cx="57.6" cy="21.599999999999998" r="5.76" fill="white"/>
+  </g>
+  
+  <!-- Text (for larger sizes) -->
+  
+</svg>

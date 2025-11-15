@@ -1,0 +1,43 @@
+===========================================
+DEPLOYMENT WEBSITE
+===========================================
+Menggunakan Netlify
+link:
+https://melodious-pixie-7dad5d.netlify.app/
+===========================================
+CARA MENJALANKAN APLIKASI
+===========================================
+Webpack (Dengan npm install)
+-----------------------------------------
+1. Install dependencies: npm install
+2. Isi API key di: src/scripts/data/config.js
+3. Jalankan dev server: npm run start-dev
+4. Browser otomatis buka: http://localhost:8080
+5. Build production: npm run build
+
+===========================================
+TROUBLESHOOTING
+===========================================
+
+Peta tidak muncul?
+- Cek API key sudah diisi dengan benar
+- Pastikan format: 'string_tanpa_spasi'
+- Test dengan test-simple.html
+- Lihat console browser untuk error
+
+Module not found (Webpack)?
+- Jalankan: npm install
+- Pastikan dependencies terinstall
+
+Port sudah digunakan?
+- Ganti port di webpack.dev.js
+- Atau kill process yang menggunakan port
+
+===========================================
+SUPPORT & DOKUMENTASI
+===========================================
+
+MapTiler:
+- Dashboard: https://cloud.maptiler.com/
+- Docs: https://docs.maptiler.com/sdk-js/
+- Support: https://support.maptiler.com/

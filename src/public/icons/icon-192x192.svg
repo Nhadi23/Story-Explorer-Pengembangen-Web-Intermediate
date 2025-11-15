@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="192" height="192" fill="#2563eb"/>
+  
+  <!-- Icon content -->
+  <g transform="translate(48, 48)">
+    <!-- Book -->
+    <rect x="0" y="19.200000000000003" width="96" height="76.80000000000001" fill="white" rx="3.84"/>
+    <line x1="48" y1="19.200000000000003" x2="48" y2="96" stroke="#2563eb" stroke-width="3.84"/>
+    
+    <!-- Location pin -->
+    <circle cx="76.80000000000001" cy="28.799999999999997" r="15.36" fill="#f59e0b"/>
+    <circle cx="76.80000000000001" cy="28.799999999999997" r="7.68" fill="white"/>
+  </g>
+  
+  <!-- Text (for larger sizes) -->
+  <text x="96" y="163.2" font-family="Arial, sans-serif" font-size="23.04" font-weight="bold" text-anchor="middle" fill="white">Story</text>
+</svg>

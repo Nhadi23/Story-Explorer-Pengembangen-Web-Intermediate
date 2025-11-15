@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Story Explorer - Jelajahi dan bagikan cerita dari berbagai lokasi">
+  <meta name="theme-color" content="#2563eb">
+  
+  <!-- PWA Meta Tags -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Story Explorer">
+  
+  <!-- Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Icons -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png">
+  
+  <title>Story Explorer</title>
+</head>
+<body>
+  <!-- Skip to content link -->
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <!-- Install PWA Banner -->
+  <div id="install-banner" class="install-banner" style="display: none;">
+    <div class="install-content">
+      <span>📱 Install Story Explorer untuk pengalaman lebih baik!</span>
+      <div class="install-actions">
+        <button id="install-btn" class="btn btn-primary">Install</button>
+        <button id="install-dismiss" class="btn btn-secondary">Nanti</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <nav class="nav-container">
+      <h1 class="app-title">Story Explorer</h1>
+      <ul class="nav-menu" role="navigation" aria-label="Main navigation">
+        <li><a href="#/" class="nav-link">Home</a></li>
+        <li><a href="#/add-story" class="nav-link">Add Story</a></li>
+        <li><a href="#/favorites" class="nav-link">Favorites</a></li>
+        <li><a href="#/about" class="nav-link">About</a></li>
+        <li><a href="#/login" class="nav-link auth-link" id="login-link">Login</a></li>
+        <li><button class="nav-link auth-link btn-logout" id="logout-btn" style="display: none;">Logout</button></li>
+      </ul>
+      <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content" class="main-content">
+    <div id="page-container"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Story Explorer created by Ahmad Nugrahadi</p>
+      <div class="footer-actions">
+        <button id="notification-toggle" class="btn btn-secondary btn-sm">
+          <span id="notification-icon">🔔</span>
+          <span id="notification-text">Enable Notifications</span>
+        </button>
+        <button id="test-notification-btn" class="btn btn-secondary btn-sm" style="display: none;">
+          Test Notification
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay" style="display: none;">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Offline Indicator -->
+  <div id="offline-indicator" class="offline-indicator" style="display: none;">
+    <span>📡 Anda sedang offline. Beberapa fitur mungkin terbatas.</span>
+  </div>
+
+  <!-- Sync Status -->
+  <div id="sync-status" class="sync-status" style="display: none;">
+    <span id="sync-message"></span>
+  </div>
+</body>
+</html>
