@@ -8,6 +8,7 @@ import '../styles/styles.css';
 import App from './pages/app.js';
 import SwRegister from './utils/sw-register.js';
 import IDBHelper from './utils/idb-helper.js';
+import ApiService from './data/api.js';
 
 // Suppress ResizeObserver loop error (harmless error from MapTiler SDK)
 const resizeObserverError = window.console.error;
@@ -44,6 +45,9 @@ window.addEventListener('load', async () => {
 
   // Setup notification toggle
   setupNotificationToggle(registration);
+
+  // Auto-subscribe untuk push notification jika user sudah login
+  await autoSubscribePushNotification(registration);
 
   // Setup online/offline detection
   setupOnlineOfflineDetection();
@@ -97,6 +101,40 @@ function setupInstallPrompt() {
   });
 }
 
+// Auto-subscribe Push Notification untuk user yang sudah login
+async function autoSubscribePushNotification(registration) {
+  if (!registration) return;
+  
+  // Cek apakah user sudah login
+  if (!ApiService.isAuthenticated()) {
+    console.log('User not logged in, skipping auto-subscribe');
+    return;
+  }
+
+  try {
+    // Cek apakah sudah subscribe
+    const isSubscribed = await SwRegister.checkPushSubscription(registration);
+    
+    if (!isSubscribed) {
+      // Check permission
+      if (Notification.permission === 'default') {
+        console.log('Notification permission not asked yet');
+        return; // Tunggu user klik toggle manual
+      }
+      
+      if (Notification.permission === 'granted') {
+        // Auto-subscribe
+        await SwRegister.subscribeToPush(registration);
+        console.log('✅ Auto-subscribed to push notifications');
+      }
+    } else {
+      console.log('Already subscribed to push notifications');
+    }
+  } catch (error) {
+    console.error('Auto-subscribe failed:', error);
+  }
+}
+
 // Notification Toggle
 function setupNotificationToggle(registration) {
   const toggleBtn = document.getElementById('notification-toggle');
@@ -108,6 +146,12 @@ function setupNotificationToggle(registration) {
   updateNotificationButton(registration);
 
   toggleBtn.addEventListener('click', async () => {
+    // Cek login
+    if (!ApiService.isAuthenticated()) {
+      alert('⚠️ Silakan login terlebih dahulu untuk mengaktifkan notifikasi');
+      return;
+    }
+
     const isSubscribed = await SwRegister.checkPushSubscription(registration);
 
     if (isSubscribed) {
@@ -119,9 +163,13 @@ function setupNotificationToggle(registration) {
       // Subscribe
       const permission = await SwRegister.requestNotificationPermission();
       if (permission) {
-        await SwRegister.subscribeToPush(registration);
-        alert('🔔 Notifikasi diaktifkan!');
-        updateNotificationButton(registration);
+        try {
+          await SwRegister.subscribeToPush(registration);
+          alert('🔔 Notifikasi diaktifkan! Anda akan menerima notifikasi saat ada story baru.');
+          updateNotificationButton(registration);
+        } catch (error) {
+          alert('❌ Gagal mengaktifkan notifikasi: ' + error.message);
+        }
       } else {
         alert('❌ Permission ditolak. Aktifkan dari pengaturan browser.');
       }

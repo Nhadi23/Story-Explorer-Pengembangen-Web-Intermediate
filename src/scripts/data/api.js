@@ -95,7 +95,7 @@ class ApiService {
     return data;
   }
 
-  // Push Notification API
+  // Push Notification API - Subscribe
   static async subscribePushNotification(subscription) {
     const token = this.getToken();
     
@@ -126,10 +126,11 @@ class ApiService {
     return data;
   }
 
+  // Push Notification API - Unsubscribe
   static async unsubscribePushNotification(endpoint) {
     const token = this.getToken();
     
-    const response = await fetch(`${CONFIG.BASE_URL}/notifications/subscribe`, {
+    const response = await fetch(`${CONFIG.BASE_URL}/notifications/unsubscribe`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,

@@ -1,3 +1,6 @@
+import CONFIG from '../data/config.js';
+import ApiService from '../data/api.js';
+
 class SwRegister {
   static async register() {
     if (!('serviceWorker' in navigator)) {
@@ -20,7 +23,6 @@ class SwRegister {
         newWorker.addEventListener('statechange', () => {
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
             console.log('✅ New Service Worker installed, refresh to update');
-            // Show update notification to user
             this.showUpdateNotification();
           }
         });
@@ -74,23 +76,30 @@ class SwRegister {
 
   static async subscribeToPush(registration) {
     try {
+      // Request notification permission first
+      const hasPermission = await this.requestNotificationPermission();
+      if (!hasPermission) {
+        throw new Error('Notification permission denied');
+      }
+
+      // Subscribe to push
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(
-          // VAPID public key - ganti dengan key Anda
-          'BCqY5XbimF2Rfs0gYQZLd29nU_G4O2Ct-EJTbwu8YxSYBK2IuzmuQ_HiGfE34ourA04pABcP56QeK-woHvED5_8'
-        ),
+        applicationServerKey: this.urlBase64ToUint8Array(CONFIG.VAPID_PUBLIC_KEY),
       });
 
       console.log('✅ Push subscription successful:', subscription);
 
-      // Send subscription to server
-      await this.sendSubscriptionToServer(subscription);
+      // Send subscription to API server
+      await ApiService.subscribePushNotification(subscription);
+
+      // Store subscription locally
+      localStorage.setItem('pushSubscription', JSON.stringify(subscription));
 
       return subscription;
     } catch (error) {
       console.error('❌ Push subscription failed:', error);
-      return null;
+      throw error;
     }
   }
 
@@ -98,7 +107,15 @@ class SwRegister {
     try {
       const subscription = await registration.pushManager.getSubscription();
       if (subscription) {
+        // Unsubscribe from server
+        await ApiService.unsubscribePushNotification(subscription.endpoint);
+        
+        // Unsubscribe locally
         await subscription.unsubscribe();
+        
+        // Remove from localStorage
+        localStorage.removeItem('pushSubscription');
+        
         console.log('✅ Push unsubscribed');
         return true;
       }
@@ -107,13 +124,6 @@ class SwRegister {
       console.error('❌ Push unsubscribe failed:', error);
       return false;
     }
-  }
-
-  static async sendSubscriptionToServer(subscription) {
-    // Store subscription in localStorage for demo
-    // In production, send to your backend server
-    localStorage.setItem('pushSubscription', JSON.stringify(subscription));
-    console.log('Subscription saved:', subscription.endpoint);
   }
 
   static urlBase64ToUint8Array(base64String) {
@@ -141,12 +151,12 @@ class SwRegister {
     }
   }
 
-  // Test push notification
+  // Test push notification (local only, tidak dari server)
   static async testPushNotification() {
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.ready;
-      registration.showNotification('Test Notification', {
-        body: 'This is a test push notification!',
+      registration.showNotification('Test Notification 🧪', {
+        body: 'Ini adalah test push notification lokal!',
         icon: '/icons/icon-192x192.png',
         badge: '/icons/icon-72x72.png',
         vibrate: [200, 100, 200],
@@ -154,8 +164,8 @@ class SwRegister {
           url: '/',
         },
         actions: [
-          { action: 'open', title: 'Open App' },
-          { action: 'close', title: 'Close' },
+          { action: 'open', title: 'Buka App' },
+          { action: 'close', title: 'Tutup' },
         ],
       });
     }

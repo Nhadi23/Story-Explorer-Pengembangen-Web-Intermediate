@@ -103,13 +103,13 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Push Notification
+// Push Notification - Handle push dari API Server
 self.addEventListener('push', (event) => {
   console.log('[SW] Push received:', event);
 
   let notificationData = {
-    title: 'Notifikasi Baru',
-    body: 'Ada data baru ditambahkan.',
+    title: 'Story Baru! 📖',
+    body: 'Ada cerita baru yang ditambahkan.',
     icon: '/icons/icon-192x192.png',
     badge: '/icons/icon-72x72.png',
     data: {
@@ -117,16 +117,17 @@ self.addEventListener('push', (event) => {
     },
   };
 
-  // Parse push data from server
+  // Parse push data dari server
   if (event.data) {
     try {
       const pushData = event.data.json();
-      console.log('[SW] Push data:', pushData);
+      console.log('[SW] Push data from server:', pushData);
 
-      // Format dari API: { title, options: { body } }
+      // API Dicoding mengirim format:
+      // { title: "...", options: { body: "...", ... } }
       notificationData = {
-        title: pushData.title || 'Notifikasi Baru',
-        body: pushData.options?.body || 'Ada data baru ditambahkan.',
+        title: pushData.title || 'Story Baru! 📖',
+        body: pushData.options?.body || pushData.body || 'Ada cerita baru yang ditambahkan.',
         icon: pushData.options?.icon || '/icons/icon-192x192.png',
         badge: pushData.options?.badge || '/icons/icon-72x72.png',
         data: {
@@ -134,7 +135,7 @@ self.addEventListener('push', (event) => {
         },
       };
     } catch (e) {
-      console.log('[SW] Push data is not JSON:', event.data.text());
+      console.log('[SW] Push data is not JSON, using text:', event.data.text());
       notificationData.body = event.data.text();
     }
   }
@@ -143,22 +144,23 @@ self.addEventListener('push', (event) => {
     body: notificationData.body,
     icon: notificationData.icon,
     badge: notificationData.badge,
-    vibrate: [200, 100, 200],
+    vibrate: [200, 100, 200, 100, 200],
     data: notificationData.data,
     actions: [
       {
         action: 'open',
-        title: 'Lihat',
+        title: '👀 Lihat',
         icon: '/icons/icon-72x72.png',
       },
       {
         action: 'close',
-        title: 'Tutup',
+        title: '❌ Tutup',
         icon: '/icons/icon-72x72.png',
       },
     ],
     requireInteraction: false,
     tag: 'story-notification',
+    renotify: true,
   };
 
   event.waitUntil(
@@ -166,7 +168,7 @@ self.addEventListener('push', (event) => {
   );
 });
 
-// Notification Click
+// Notification Click Handler
 self.addEventListener('notificationclick', (event) => {
   console.log('[SW] Notification clicked:', event);
 
@@ -184,7 +186,7 @@ self.addEventListener('notificationclick', (event) => {
       .then((clientList) => {
         // Check if window is already open
         for (let client of clientList) {
-          if (client.url === urlToOpen && 'focus' in client) {
+          if (client.url.includes(urlToOpen) && 'focus' in client) {
             return client.focus();
           }
         }
